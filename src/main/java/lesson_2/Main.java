@@ -12,11 +12,14 @@ public class Main {
             connect("usersDB");
             createTableEmployee();
             printTableMetaData("employees");
-            addEmployee("Malvina", 100000);
+            addEmployee("Lidia", 100000);
             printTwoColumnTable("employees", "name", "salary");
-            deleteByID("employees", 3);
+            //deleteByID("employees", 3);
             printTwoColumnTable("employees", "name", "salary");
             getByID("employees", 2);
+            updateEmployeesSalary(3, 120000);
+            getByID("employees",3);
+            //dropTable("employees");
             disconnect();
 
         } catch (ClassNotFoundException e) {
@@ -97,6 +100,20 @@ public class Main {
             System.out.println(resultSet.getInt("id") + " " + resultSet.getString(2) + " " + resultSet.getString(3));
             System.out.println();
             return true;
+        }
+    }
+
+    public static void dropTable(String tableName) throws SQLException {
+        System.out.println("Deleting table " + tableName);
+        int result = statement.executeUpdate("DROP TABLE IF EXISTS " + tableName);
+        System.out.println(result);
+    }
+
+    public static void updateEmployeesSalary(int id, int salary) throws SQLException {
+        System.out.println("Updating salary of employee with id " + id + "...");
+        if (getByID("employees", id)) {
+            statement.executeUpdate(String.format("UPDATE employees SET salary = %d WHERE id = %d", salary, id));
+            System.out.println("Update salary successfully\n");
         }
     }
 }
