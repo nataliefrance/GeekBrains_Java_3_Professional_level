@@ -11,6 +11,7 @@ public class Main {
         try {
             connect();
             printTable();
+            printMetaData();
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -51,10 +52,10 @@ public class Main {
     public static void printMetaData() throws SQLException {
         ResultSet rs = stmt.executeQuery("SELECT * FROM students");
         //из ResultSet достаём метаданные о состоянии таблицы.
-        ResultSetMetaData resultSetMetaData = rs.getMetaData();
+        ResultSetMetaData rsmd = rs.getMetaData();
 
-        for (int i = 1; i < resultSetMetaData.getColumnCount(); i++) {
-            System.out.println(resultSetMetaData.getColumnName(i));
+        for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+            System.out.println("name: " + rsmd.getColumnName(i) + ", type: " + rsmd.getColumnType(i));
         }
     }
 }
