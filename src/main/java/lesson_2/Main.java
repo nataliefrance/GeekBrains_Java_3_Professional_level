@@ -9,9 +9,10 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            connect();
-            printTable();
-            printMetaData();
+            connect("usersDB");
+            printTable("employees");
+            printTableMetaData("employees");
+            createTable();
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -20,11 +21,11 @@ public class Main {
         }
     }
 
-    public static void connect() throws ClassNotFoundException, SQLException {
+    public static void connect(String dataBaseName) throws ClassNotFoundException, SQLException {
         //Class.forName("org.sqlite.JDBC");
         //DriverManager – Менеджер драйверов, управляющий списком драйверов БД и позволяющий открыть соединение с базой данных
         //Метод getConnection на основании параметра URL находит java.sql.Driver соответствующей базы данных и вызывает у него метод connect.
-        connection = DriverManager.getConnection("jdbc:sqlite:usersDB");
+        connection = DriverManager.getConnection("jdbc:sqlite:" + dataBaseName);
         //stmt всегда возвращает таблицу
         stmt = connection.createStatement();
     }
@@ -36,21 +37,24 @@ public class Main {
         }
     }
 
-    public static void createDB() {
-
+    public static void createTable() throws SQLException {
+        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS employees " +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name VARCHAR," +
+                "salary INTEGER)");
     }
 
-    public static void printTable() throws SQLException {
+    public static void printTable(String tableName) throws SQLException {
         //Экземпляры этого типа содержат данные, которые были получены в результате выполнения SELECT запроса
-        ResultSet rs = stmt.executeQuery("SELECT * FROM students");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
 
         while(rs.next()) {
             System.out.println(rs.getInt(1) + " " + rs.getString("name") + " " + rs.getString("score"));
         }
     }
 
-    public static void printMetaData() throws SQLException {
-        ResultSet rs = stmt.executeQuery("SELECT * FROM students");
+    public static void printTableMetaData(String tableName) throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
         //из ResultSet достаём метаданные о состоянии таблицы.
         ResultSetMetaData rsmd = rs.getMetaData();
 
