@@ -10,9 +10,11 @@ public class Main {
     public static void main(String[] args) {
         try {
             connect("usersDB");
-            printTable("employees");
-            printTableMetaData("employees");
             createTable();
+            printTableMetaData("employees");
+            addEmployee("Lidia", 50000);
+            printTwoColumnTable("employees", "name", "salary");
+
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -44,12 +46,12 @@ public class Main {
                 "salary INTEGER)");
     }
 
-    public static void printTable(String tableName) throws SQLException {
+    public static void printTwoColumnTable(String tableName, String firstColumnLabel, String secondColumnLabel) throws SQLException {
         //Экземпляры этого типа содержат данные, которые были получены в результате выполнения SELECT запроса
         ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
 
         while(rs.next()) {
-            System.out.println(rs.getInt(1) + " " + rs.getString("name") + " " + rs.getString("score"));
+            System.out.println(rs.getInt(1) + " " + rs.getString(firstColumnLabel) + " " + rs.getString(secondColumnLabel));
         }
     }
 
@@ -61,5 +63,9 @@ public class Main {
         for (int i = 1; i <= rsmd.getColumnCount(); i++) {
             System.out.println("name: " + rsmd.getColumnName(i) + ", type: " + rsmd.getColumnType(i));
         }
+    }
+
+    public static void addEmployee(String name, int salary) throws SQLException {
+        stmt.executeUpdate("INSERT INTO employees(name, salary) VALUES ('" + name + "', " + salary + ")");
     }
 }
